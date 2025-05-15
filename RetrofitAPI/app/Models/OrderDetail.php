@@ -26,4 +26,9 @@ class OrderDetail extends Model
     {
         return $this->hasOne(Rating::class, 'orderDetailID', 'orderDetailID');
     }
+
+    public function orderAddons()
+    {
+        return $this->hasMany(OrderAddon::class, 'orderDetailID', 'orderDetailID');
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -18,3 +19,11 @@ Route::get('/products/{id}', [ProductController::class, 'getProductById']);
 Route::post('/products', [ProductController::class, 'createProduct']);
 Route::put('/products/{id}', [ProductController::class, 'updateProduct']);
 Route::delete('/products/{id}', [ProductController::class, 'deleteProduct']);
+
+// Order Routes
+Route::get('/orders', [OrderController::class, 'getAllOrders']);
+Route::get('/orders/{id}', [OrderController::class, 'getOrderById']);
+Route::get('/orders/{userid}', [OrderController::class, 'getOrderByUserID']);
+Route::post('/orders', [OrderController::class, 'createOrder']);
+Route::put('/orders/{id}', [OrderController::class, 'updateOrder']);
+Route::delete('/orders/{id}', [OrderController::class, 'deleteOrder']);
