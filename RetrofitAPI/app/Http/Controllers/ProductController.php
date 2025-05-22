@@ -68,7 +68,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'Category not found'], 404);
         }
 
-        $products = Product::where('categoryID', $category->categoryID)->get();
+        $products = Product::with('category')->where('categoryID', $category->categoryID)->get();
 
         if ($products->isEmpty()) {
             return response()->json(['message' => 'No products found in this category'], 404);
@@ -85,7 +85,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'Category not found'], 404);
         }
 
-        $products = Product::where('categoryID', $category->categoryID)->get();
+        $products = Product::with('category')->where('categoryID', $category->categoryID)->get();
 
         if ($products->isEmpty()) {
             return response()->json(['message' => 'No products found in this category'], 404);
