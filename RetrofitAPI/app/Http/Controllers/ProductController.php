@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -57,5 +58,39 @@ class ProductController extends Controller
         }
         $product->delete();
         return response()->json(['message' => 'Product deleted successfully'], 200);
+    }
+
+    public function getProductsByCategoryName($categoryName)
+    {
+        $category = Category::where('name', $categoryName)->first();
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        $products = Product::where('categoryID', $category->categoryID)->get();
+
+        if ($products->isEmpty()) {
+            return response()->json(['message' => 'No products found in this category'], 404);
+        }
+
+        return response()->json($products, 200);
+    }
+
+    public function getProductsByCategoryID($categoryID)
+    {
+        $category = Category::find($categoryID);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        $products = Product::where('categoryID', $category->categoryID)->get();
+
+        if ($products->isEmpty()) {
+            return response()->json(['message' => 'No products found in this category'], 404);
+        }
+
+        return response()->json($products, 200);
     }
 }

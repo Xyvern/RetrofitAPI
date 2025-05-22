@@ -19,6 +19,8 @@ Route::get('/products/{id}', [ProductController::class, 'getProductById']);
 Route::post('/products', [ProductController::class, 'createProduct']);
 Route::put('/products/{id}', [ProductController::class, 'updateProduct']);
 Route::delete('/products/{id}', [ProductController::class, 'deleteProduct']);
+Route::get('/products/category/name/{categoryName}', [ProductController::class, 'getProductsByCategoryName']);
+Route::get('/products/category/id/{categoryID}', [ProductController::class, 'getProductsByCategoryID']);
 
 // Order Routes
 Route::get('/orders', [OrderController::class, 'getAllOrders']);
