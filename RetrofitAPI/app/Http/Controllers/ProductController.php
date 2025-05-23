@@ -10,7 +10,9 @@ class ProductController extends Controller
 {
     public function getAllProducts()
     {
-        $products = Product::all();
+        // $products = Product::all();
+        // return response()->json($products, 200);
+        $products = Product::with('category')->get();
         return response()->json($products, 200);
     }
 
