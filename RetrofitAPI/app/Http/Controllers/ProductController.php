@@ -10,9 +10,23 @@ class ProductController extends Controller
 {
     public function getAllProducts()
     {
-        // $products = Product::all();
-        // return response()->json($products, 200);
-        $products = Product::with('category')->get();
+        $products = Product::with(['category', 'ratings'])->get()->map(function ($product) {
+            return [
+                'productID' => $product->productID,
+                'name' => $product->name,
+                'categoryID' => $product->categoryID,
+                'price' => $product->price,
+                'rating' => $product->rating,
+                'description' => $product->description,
+                'img_url' => $product->img_url,
+                'deleted_at' => $product->deleted_at,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at,
+                'category' => $product->category,
+                'total_rating' => $product->getTotalRating(), 
+            ];
+        });
+
         return response()->json($products, 200);
     }
 

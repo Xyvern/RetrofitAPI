@@ -28,4 +28,9 @@ class Product extends Model
     {
         return $this->hasMany(Rating::class, 'productID', 'productID');
     }
+
+    public function getTotalRating()
+    {
+        return $this->ratings->sum('rating')?: 0;
+    }
 }
