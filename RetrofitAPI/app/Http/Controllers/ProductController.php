@@ -84,11 +84,22 @@ class ProductController extends Controller
             return response()->json(['message' => 'Category not found'], 404);
         }
 
-        $products = Product::with('category')->where('categoryID', $category->categoryID)->get();
-
-        if ($products->isEmpty()) {
-            return response()->json(['message' => 'No products found in this category'], 404);
-        }
+        $products = Product::with(['category', 'ratings'])->where('categoryID', $category->categoryID)->get()->map(function ($product) {
+            return [
+                'productID' => $product->productID,
+                'name' => $product->name,
+                'categoryID' => $product->categoryID,
+                'price' => $product->price,
+                'rating' => $product->rating,
+                'description' => $product->description,
+                'img_url' => $product->img_url,
+                'deleted_at' => $product->deleted_at,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at,
+                'category' => $product->category,
+                'total_rating' => $product->getTotalRating(), 
+            ];
+        });
 
         return response()->json($products, 200);
     }
