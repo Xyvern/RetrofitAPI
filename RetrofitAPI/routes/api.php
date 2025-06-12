@@ -12,6 +12,9 @@ Route::get('/users/{id}', [UserController::class, 'getUserById']);
 Route::post('/users', [UserController::class, 'createUser']);
 Route::put('/users/{id}', [UserController::class, 'updateUser']);
 Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
+Route::get('users/email/{email}', [UserController::class, 'getUserByEmail']);
+Route::post('login', [UserController::class, 'login']);
+Route::get('/postcode', [UserController::class, 'getPostCode']);
 
 // Product Routes
 Route::get('/products', [ProductController::class, 'getAllProducts']);
