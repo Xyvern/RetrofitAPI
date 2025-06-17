@@ -32,3 +32,9 @@ Route::get('/orders/{userid}', [OrderController::class, 'getOrderByUserID']);
 Route::post('/orders', [OrderController::class, 'createOrder']);
 Route::put('/orders/{id}', [OrderController::class, 'updateOrder']);
 Route::delete('/orders/{id}', [OrderController::class, 'deleteOrder']);
+
+//Employees
+Route::get('/employees', [UserController::class, 'getEmployees']);
+Route::put('/employees/{id}', [UserController::class, 'updateEmployees']);
+
+
