@@ -82,11 +82,22 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
+        
         $user->update([
             'name' => $request->input('name', $user->name),
-            'email' => $request->input('email', $user->email),
+            'password' => Hash::make($request->input('password', $user->password)),
+            'phone' => $request->input('phone', $user->phone),
+            'address' => $request->input('address', $user->address),
+            'postcode' => $request->input('postcode', $user->postcode),
         ]);
-        return response()->json(['message' => 'User updated successfully'], 200);
+        
+        if ($request->input('status') == 'active') {
+            $user->restore();
+        } else {
+            $user->delete();
+        }
+        
+        return response()->json($user, 200);
     }
 
     public function deleteUser($id)
