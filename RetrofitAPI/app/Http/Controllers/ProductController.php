@@ -19,6 +19,9 @@ class ProductController extends Controller
                 'rating' => $product->rating,
                 'description' => $product->description,
                 'img_url' => $product->img_url,
+                'fat' => $product->fat,
+                'calories' => $product->calories,
+                'protein' => $product->protein,
                 'deleted_at' => $product->deleted_at,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at,
@@ -48,6 +51,9 @@ class ProductController extends Controller
             'rating' => $request->input('rating', 0.00),
             'description' => $request->input('description'),
             'img_url' => $request->input('img_url', '-'),
+            'fat' => $request->input('fat', 0),
+            'calories' => $request->input('calories', 0),
+            'protein' => $request->input('protein', 0),
         ]);
         return response()->json(['message' => 'Product created successfully'], 201);
     }

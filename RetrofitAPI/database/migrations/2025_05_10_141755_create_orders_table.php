@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('orderID');
             $table->unsignedBigInteger('userID');
             $table->decimal('subtotal', 10, 2);
+            $table->integer('prep_time');
             $table->decimal('shipping_fee', 10, 2);
             $table->decimal('total', 10, 2);
             $table->string('status')->default('pending');

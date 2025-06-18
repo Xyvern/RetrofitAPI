@@ -16,6 +16,7 @@ class OrdersTableSeeder extends Seeder
             [
                 'userID' => 1,
                 'subtotal' => 85000,
+                'prep_time' => 30,
                 'shipping_fee' => 10000,
                 'total' => 95000,
                 'status' => 'completed',
@@ -25,6 +26,7 @@ class OrdersTableSeeder extends Seeder
             [
                 'userID' => 2,
                 'subtotal' => 45000,
+                'prep_time' => 20,
                 'shipping_fee' => 5000,
                 'total' => 50000,
                 'status' => 'pending',
@@ -34,6 +36,7 @@ class OrdersTableSeeder extends Seeder
             [
                 'userID' => 1,
                 'subtotal' => 30000,
+                'prep_time' => 15,
                 'shipping_fee' => 5000,
                 'total' => 35000,
                 'status' => 'shipped',
