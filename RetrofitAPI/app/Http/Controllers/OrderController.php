@@ -3,14 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     public function getAllOrders()
     {
-        $orders = Order::all();
-        return response()->json($orders,200);
+        $orders = Order::with('user')->get()->map(function ($order) {
+            return [
+                'orderID' => $order->orderID,
+                'userID' => $order->userID,
+                'customer_name' => $order->user->name ?? 'Unknown',
+                'customer_phone' => $order->user->phone ?? 'Unknown',
+                'subtotal' => $order->subtotal,
+                'shipping_fee' => $order->shipping_fee,
+                'total' => $order->total,
+                'status' => $order->status,
+                'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y'),
+                'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y'),
+            ];
+        });
+
+        return response()->json($orders, 200);
     }
     public function getOrderById($id)
     {
