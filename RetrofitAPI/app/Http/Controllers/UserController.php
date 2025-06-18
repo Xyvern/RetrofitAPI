@@ -82,16 +82,22 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
+        
         $user->update([
             'name' => $request->input('name', $user->name),
-            'email' => $request->input('email', $user->email),
+            'password' => Hash::make($request->input('password', $user->password)),
+            'phone' => $request->input('phone', $user->phone),
+            'address' => $request->input('address', $user->address),
+            'postcode' => $request->input('postcode', $user->postcode),
         ]);
+        
         if ($request->input('status') == 'active') {
             $user->restore();
-        }else{
+        } else {
             $user->delete();
         }
-        return response()->json(['message' => 'User updated successfully'], 200);
+        
+        return response()->json($user, 200);
     }
 
     public function deleteUser($id)
@@ -111,5 +117,26 @@ class UserController extends Controller
         }
         return response()->json($postcodes, 200);
     }
-     
+
+    //employee
+     public function getEmployees()
+    {
+        $employees = User::whereIn('role', [2, 4])->get();
+        if ($employees->isEmpty()) {
+            return response()->json(['message' => 'No employees found'], 404);
+        }
+        return response()->json($employees, 200);
+    }
+    public function updateEmployees(Request $request, $id)
+    {
+        $user = User::withTrashed()->where('userID', $id)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        $user->update([
+            'name' => $request->input('name', $user->name),
+            'email' => $request->input('email', $user->email)
+        ]);
+        return response()->json(['message' => 'User updated successfully'], 200);
+    }
 }
