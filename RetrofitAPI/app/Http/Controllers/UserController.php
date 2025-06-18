@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Postcode;
 use App\Models\User;
+use App\Models\Topup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -139,4 +140,42 @@ class UserController extends Controller
         ]);
         return response()->json(['message' => 'User updated successfully'], 200);
     }
+
+    public function getSnapToken(Request $request, $id) {
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+        $orderId = rand(1000, 9999);
+        $params = [
+            'transaction_details' => [
+                'order_id' =>  $orderId,
+                'gross_amount' => $request->amount,
+            ],
+            'customer_details' => [
+                'first_name' => 'customer',
+                'email' => 'customer@example.com',
+            ],
+        ];
+
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        Topup::create([
+            'topupID' => $orderId,
+            'userID' => $id,
+            'amount' => $request->amount,
+            'status' => 'pending',
+            'snap_token' => $snapToken,
+            'transdate' => now(),
+        ]);
+
+
+        $user = User::find($id); 
+        if ($user) {
+            $user->increment('credit', $request->amount); 
+        }
+
+        return response()->json(['token' => $snapToken, 'orderId' => $orderId]);
+    }
+
+    
 }
