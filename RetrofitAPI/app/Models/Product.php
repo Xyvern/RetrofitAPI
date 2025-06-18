@@ -12,7 +12,7 @@ class Product extends Model
     protected $primaryKey = 'productID';
     public $timestamps = true;
     public $incrementing = true;
-    protected $fillable = ['name', 'categoryID', 'price', 'rating', 'description','img_url'];
+    protected $fillable = ['name', 'categoryID', 'price', 'rating', 'description','img_url', 'fat', 'calories', 'protein'];
 
     public function category()
     {

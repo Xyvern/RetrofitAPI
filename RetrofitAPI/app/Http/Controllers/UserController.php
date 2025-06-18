@@ -117,5 +117,26 @@ class UserController extends Controller
         }
         return response()->json($postcodes, 200);
     }
-     
+
+    //employee
+     public function getEmployees()
+    {
+        $employees = User::whereIn('role', [2, 4])->get();
+        if ($employees->isEmpty()) {
+            return response()->json(['message' => 'No employees found'], 404);
+        }
+        return response()->json($employees, 200);
+    }
+    public function updateEmployees(Request $request, $id)
+    {
+        $user = User::withTrashed()->where('userID', $id)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        $user->update([
+            'name' => $request->input('name', $user->name),
+            'email' => $request->input('email', $user->email)
+        ]);
+        return response()->json(['message' => 'User updated successfully'], 200);
+    }
 }

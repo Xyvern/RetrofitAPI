@@ -16,6 +16,9 @@ return new class extends Migration
             $table->float('rating', 3, 2)->nullable();
             $table->text('description')->nullable();
             $table->string('img_url')->nullable();
+            $table->integer('fat');
+            $table->integer('calories');
+            $table->integer('protein');
             $table->softDeletes();
             $table->timestamps();
 

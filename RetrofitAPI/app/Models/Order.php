@@ -10,7 +10,7 @@ class Order extends Model
     protected $primaryKey = 'orderID';
     public $timestamps = true;
     public $incrementing = true;
-    protected $fillable = ['userID', 'subtotal', 'shipping_fee', 'total', 'status'];
+    protected $fillable = ['userID', 'subtotal', 'prep_time', 'shipping_fee', 'total', 'status'];
 
     public function user()
     {

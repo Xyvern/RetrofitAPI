@@ -3,23 +3,93 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     public function getAllOrders()
     {
-        $orders = Order::all();
-        return response()->json($orders,200);
+        $orders = Order::with('user')->get()->map(function ($order) {
+            return [
+                'orderID' => $order->orderID,
+                'userID' => $order->userID,
+                'customer_name' => $order->user->name ?? 'Unknown',
+                'customer_phone' => $order->user->phone ?? 'Unknown',
+                'subtotal' => $order->subtotal,
+                'shipping_fee' => $order->shipping_fee,
+                'total' => $order->total,
+                'status' => $order->status,
+                'prep_time' => $order->prep_time,
+                'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y'),
+                'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y'),
+                'order_details' => $order->orderDetails->map(function ($detail) {
+                    return [
+                        'orderDetailID' => $detail->orderDetailID,
+                        'productID' => $detail->productID,
+                        'product_name' => $detail->product->name ?? 'Unknown',
+                        'quantity' => $detail->quantity,
+                        'price' => $detail->price,
+                        'total' => $detail->quantity * $detail->price,
+                        'addons' => $detail->orderAddons->map(function ($addon) {
+                            return [
+                                'orderAddonID' => $addon->orderAddonID,
+                                'addon_name' => $addon->addon_name,
+                            ];
+                        }),
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json($orders, 200);
     }
+
     public function getOrderById($id)
     {
-        $order = Order::with('orderDetails.orderAddons')->find($id);
+        $order = Order::with([
+            'user',
+            'orderDetails.product',
+            'orderDetails.orderAddons'
+        ])->find($id);
+
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
-        return response()->json($order, 200);
+
+        $formattedOrder = [
+            'orderID' => $order->orderID,
+            'userID' => $order->userID,
+            'customer_name' => $order->user->name ?? 'Unknown',
+            'customer_phone' => $order->user->phone ?? 'Unknown',
+            'subtotal' => $order->subtotal,
+            'shipping_fee' => $order->shipping_fee,
+            'total' => $order->total,
+            'status' => $order->status,
+            'prep_time' => $order->prep_time,
+            'created_at' => \Carbon\Carbon::parse($order->created_at)->translatedFormat('d F Y'),
+            'updated_at' => \Carbon\Carbon::parse($order->updated_at)->translatedFormat('d F Y'),
+            'order_details' => $order->orderDetails->map(function ($detail) {
+                return [
+                    'orderDetailID' => $detail->orderDetailID,
+                    'productID' => $detail->productID,
+                    'product_name' => $detail->product->name ?? 'Unknown',
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->price,
+                    'total' => $detail->quantity * $detail->price,
+                    'addons' => $detail->orderAddons->map(function ($addon) {
+                        return [
+                            'orderAddonID' => $addon->orderAddonID,
+                            'addon_name' => $addon->addon_name,
+                        ];
+                    }),
+                ];
+            }),
+        ];
+
+        return response()->json($formattedOrder, 200);
     }
+    
     public function getOrderByUserID($userid)
     {
         $orders = Order::with('orderDetails.orderAddons')->where('userID', $userid)->get();
