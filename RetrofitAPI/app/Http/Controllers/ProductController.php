@@ -52,7 +52,10 @@ class ProductController extends Controller
             'created_at' => $product->created_at,
             'updated_at' => $product->updated_at,
             'category' => $product->category,
-            'total_rating' => $product->getTotalRating(), 
+            'total_rating' => $product->getTotalRating(),
+            'protein' => $product->protein,
+            'fat' => $product->fat,
+            'calories' => $product->calories,
         ];
         
         return response()->json($newProduct, 200);
