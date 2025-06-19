@@ -39,7 +39,7 @@ class OrdersTableSeeder extends Seeder
                 'prep_time' => 15,
                 'shipping_fee' => 5000,
                 'total' => 35000,
-                'status' => 'shipped',
+                'status' => 'shipping',
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
