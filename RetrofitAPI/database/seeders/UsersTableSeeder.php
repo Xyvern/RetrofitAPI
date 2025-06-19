@@ -45,6 +45,17 @@ class UsersTableSeeder extends Seeder
                 'role' => 3,
                 'credit' => 0.00,
             ],
+            [
+                'name' => 'Sipen',
+                'email' => 'kurir@example.com',
+                'password' => Hash::make('kurir123'),
+                'phone' => '1122334455',
+                'address' => '789 Pine Ln, Admin City',
+                'postcode' => '60217',
+                'pfp_url' => 'https://example.com/admin-profile.jpg',
+                'role' => 4,
+                'credit' => 0.00,
+            ],
         ];
 
         DB::table('users')->insert($users);

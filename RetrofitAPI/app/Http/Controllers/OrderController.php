@@ -16,6 +16,7 @@ class OrderController extends Controller
                 'userID' => $order->userID,
                 'customer_name' => $order->user->name ?? 'Unknown',
                 'customer_phone' => $order->user->phone ?? 'Unknown',
+                'address' => $order->user->address ?? 'Unknown',
                 'subtotal' => $order->subtotal,
                 'shipping_fee' => $order->shipping_fee,
                 'total' => $order->total,
@@ -62,6 +63,7 @@ class OrderController extends Controller
             'userID' => $order->userID,
             'customer_name' => $order->user->name ?? 'Unknown',
             'customer_phone' => $order->user->phone ?? 'Unknown',
+            'address' => $order->user->address ?? 'Unknown',
             'subtotal' => $order->subtotal,
             'shipping_fee' => $order->shipping_fee,
             'total' => $order->total,
@@ -183,6 +185,7 @@ class OrderController extends Controller
                 'userID' => $order->userID,
                 'customer_name' => $order->user->name ?? 'Unknown',
                 'customer_phone' => $order->user->phone ?? 'Unknown',
+                'address' => $order->user->address ?? 'Unknown',
                 'subtotal' => $order->subtotal,
                 'shipping_fee' => $order->shipping_fee,
                 'total' => $order->total,
@@ -222,6 +225,7 @@ class OrderController extends Controller
                     'userID' => $order->userID,
                     'customer_name' => $order->user->name ?? 'Unknown',
                     'customer_phone' => $order->user->phone ?? 'Unknown',
+                    'address' => $order->user->address ?? 'Unknown',
                     'subtotal' => $order->subtotal,
                     'shipping_fee' => $order->shipping_fee,
                     'total' => $order->total,
@@ -246,6 +250,126 @@ class OrderController extends Controller
                         ];
                     }),
                 ];
+            });
+
+        return response()->json($orders, 200);
+    }
+
+    public function getCookingOrders(){
+        $orders = Order::with('user')
+            ->where('status', 'cooking')
+            ->get()
+            ->map(function ($order) {
+            return [
+                'orderID' => $order->orderID,
+                'userID' => $order->userID,
+                'customer_name' => $order->user->name ?? 'Unknown',
+                'customer_phone' => $order->user->phone ?? 'Unknown',
+                'address' => $order->user->address ?? 'Unknown',
+                'subtotal' => $order->subtotal,
+                'shipping_fee' => $order->shipping_fee,
+                'total' => $order->total,
+                'status' => $order->status,
+                'prep_time' => $order->prep_time,
+                'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y H:i'),
+                'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y H:i'),
+                'order_details' => $order->orderDetails->map(function ($detail) {
+                return [
+                    'orderDetailID' => $detail->orderDetailID,
+                    'productID' => $detail->productID,
+                    'product_name' => $detail->product->name ?? 'Unknown',
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->price,
+                    'total' => $detail->quantity * $detail->price,
+                    'addons' => $detail->orderAddons->map(function ($addon) {
+                    return [
+                        'orderAddonID' => $addon->orderAddonID,
+                        'addon_name' => $addon->addon_name,
+                    ];
+                    }),
+                ];
+                }),
+            ];
+            });
+
+        return response()->json($orders, 200);
+    }
+
+    public function getShippingOrders(){
+        $orders = Order::with('user')
+            ->where('status', 'shipping')
+            ->get()
+            ->map(function ($order) {
+            return [
+                'orderID' => $order->orderID,
+                'userID' => $order->userID,
+                'customer_name' => $order->user->name ?? 'Unknown',
+                'customer_phone' => $order->user->phone ?? 'Unknown',
+                'address' => $order->user->address ?? 'Unknown',
+                'subtotal' => $order->subtotal,
+                'shipping_fee' => $order->shipping_fee,
+                'total' => $order->total,
+                'status' => $order->status,
+                'prep_time' => $order->prep_time,
+                'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y H:i'),
+                'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y H:i'),
+                'order_details' => $order->orderDetails->map(function ($detail) {
+                return [
+                    'orderDetailID' => $detail->orderDetailID,
+                    'productID' => $detail->productID,
+                    'product_name' => $detail->product->name ?? 'Unknown',
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->price,
+                    'total' => $detail->quantity * $detail->price,
+                    'addons' => $detail->orderAddons->map(function ($addon) {
+                    return [
+                        'orderAddonID' => $addon->orderAddonID,
+                        'addon_name' => $addon->addon_name,
+                    ];
+                    }),
+                ];
+                }),
+            ];
+            });
+
+        return response()->json($orders, 200);
+    }
+
+    public function getCompletedOrders(){
+        $orders = Order::with('user')
+            ->where('status', 'completed')
+            ->get()
+            ->map(function ($order) {
+            return [
+                'orderID' => $order->orderID,
+                'userID' => $order->userID,
+                'customer_name' => $order->user->name ?? 'Unknown',
+                'customer_phone' => $order->user->phone ?? 'Unknown',
+                'address' => $order->user->address ?? 'Unknown',
+                'subtotal' => $order->subtotal,
+                'shipping_fee' => $order->shipping_fee,
+                'total' => $order->total,
+                'status' => $order->status,
+                'prep_time' => $order->prep_time,
+                'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y H:i'),
+                'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y H:i'),
+                'order_details' => $order->orderDetails->map(function ($detail) {
+                return [
+                    'orderDetailID' => $detail->orderDetailID,
+                    'productID' => $detail->productID,
+                    'product_name' => $detail->product->name ?? 'Unknown',
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->price,
+                    'total' => $detail->quantity * $detail->price,
+                    'addons' => $detail->orderAddons->map(function ($addon) {
+                    return [
+                        'orderAddonID' => $addon->orderAddonID,
+                        'addon_name' => $addon->addon_name,
+                    ];
+                    }),
+                ];
+                }),
+            ];
             });
 
         return response()->json($orders, 200);
