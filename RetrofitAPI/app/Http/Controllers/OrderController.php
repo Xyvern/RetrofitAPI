@@ -21,8 +21,8 @@ class OrderController extends Controller
                 'total' => $order->total,
                 'status' => $order->status,
                 'prep_time' => $order->prep_time,
-                'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y'),
-                'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y'),
+                'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y H:i'),
+                'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y H:i'),
                 'order_details' => $order->orderDetails->map(function ($detail) {
                     return [
                         'orderDetailID' => $detail->orderDetailID,
@@ -67,8 +67,8 @@ class OrderController extends Controller
             'total' => $order->total,
             'status' => $order->status,
             'prep_time' => $order->prep_time,
-            'created_at' => \Carbon\Carbon::parse($order->created_at)->translatedFormat('d F Y'),
-            'updated_at' => \Carbon\Carbon::parse($order->updated_at)->translatedFormat('d F Y'),
+            'created_at' => \Carbon\Carbon::parse($order->created_at)->translatedFormat('d F Y H:i'),
+            'updated_at' => \Carbon\Carbon::parse($order->updated_at)->translatedFormat('d F Y H:i'),
             'order_details' => $order->orderDetails->map(function ($detail) {
                 return [
                     'orderDetailID' => $detail->orderDetailID,
@@ -132,5 +132,122 @@ class OrderController extends Controller
         }
         $order->delete();
         return response()->json(['message' => 'Order deleted successfully'], 200);
+    }
+    public function rejectOrder($id)
+    {
+        $order = Order::find($id);
+        if (!$order || $order->status !== 'pending') {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+        $order->update(['status' => 'rejected']);
+        return response()->json(['message' => 'Order rejected successfully'], 200);
+    }
+
+    public function acceptOrder(Request $request, $id)
+    {
+        $order = Order::find($id);
+        if (!$order || $order->status !== 'pending') {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+        $order->update(['status' => 'cooking', 'prep_time' => $request->input('prep_time', $order->prep_time)]);
+        return response()->json(['message' => 'Order accepted successfully'], 200);
+    }
+
+    public function shipOrder($id)
+    {
+        $order = Order::find($id);
+        if (!$order || $order->status !== 'cooking') {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+        $order->update(['status' => 'shipping']);
+        return response()->json(['message' => 'Order shipped successfully'], 200);
+    }
+
+    public function completeOrder($id)
+    {
+        $order = Order::find($id);
+        if (!$order || $order->status !== 'shipping') {
+            return response()->json(['message' => 'Order not found or not in the correct status'], 404);
+        }
+        $order->update(['status' => 'completed']);
+        return response()->json(['message' => 'Order completed successfully'], 200);
+    }
+
+    public function getPendingOrders(){
+        $orders = Order::with('user')
+            ->where('status', 'pending')
+            ->get()
+            ->map(function ($order) {
+            return [
+                'orderID' => $order->orderID,
+                'userID' => $order->userID,
+                'customer_name' => $order->user->name ?? 'Unknown',
+                'customer_phone' => $order->user->phone ?? 'Unknown',
+                'subtotal' => $order->subtotal,
+                'shipping_fee' => $order->shipping_fee,
+                'total' => $order->total,
+                'status' => $order->status,
+                'prep_time' => $order->prep_time,
+                'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y H:i'),
+                'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y H:i'),
+                'order_details' => $order->orderDetails->map(function ($detail) {
+                return [
+                    'orderDetailID' => $detail->orderDetailID,
+                    'productID' => $detail->productID,
+                    'product_name' => $detail->product->name ?? 'Unknown',
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->price,
+                    'total' => $detail->quantity * $detail->price,
+                    'addons' => $detail->orderAddons->map(function ($addon) {
+                    return [
+                        'orderAddonID' => $addon->orderAddonID,
+                        'addon_name' => $addon->addon_name,
+                    ];
+                    }),
+                ];
+                }),
+            ];
+            });
+
+        return response()->json($orders, 200);
+    }
+
+    public function getActiveOrders(){
+        $orders = Order::with('user')
+            ->whereIn('status', ['cooking', 'shipping', 'completed', 'rejected'])
+            ->get()
+            ->map(function ($order) {
+                return [
+                    'orderID' => $order->orderID,
+                    'userID' => $order->userID,
+                    'customer_name' => $order->user->name ?? 'Unknown',
+                    'customer_phone' => $order->user->phone ?? 'Unknown',
+                    'subtotal' => $order->subtotal,
+                    'shipping_fee' => $order->shipping_fee,
+                    'total' => $order->total,
+                    'status' => $order->status,
+                    'prep_time' => $order->prep_time,
+                    'created_at' => Carbon::parse($order->created_at)->translatedFormat('d F Y H:i'),
+                    'updated_at' => Carbon::parse($order->updated_at)->translatedFormat('d F Y H:i'),
+                    'order_details' => $order->orderDetails->map(function ($detail) {
+                        return [
+                            'orderDetailID' => $detail->orderDetailID,
+                            'productID' => $detail->productID,
+                            'product_name' => $detail->product->name ?? 'Unknown',
+                            'quantity' => $detail->quantity,
+                            'price' => $detail->price,
+                            'total' => $detail->quantity * $detail->price,
+                            'addons' => $detail->orderAddons->map(function ($addon) {
+                                return [
+                                    'orderAddonID' => $addon->orderAddonID,
+                                    'addon_name' => $addon->addon_name,
+                                ];
+                            }),
+                        ];
+                    }),
+                ];
+            });
+
+        return response()->json($orders, 200);
     }
 }

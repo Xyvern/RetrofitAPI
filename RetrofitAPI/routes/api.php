@@ -16,6 +16,7 @@ Route::get('users/email/{email}', [UserController::class, 'getUserByEmail']);
 Route::post('login', [UserController::class, 'login']);
 Route::get('/postcode', [UserController::class, 'getPostCode']);
 Route::post('/topup/token/{id}', [UserController::class, 'getSnapToken']);
+Route::get('/postcode-location', [UserController::class, 'getCoordinates']);
 
 
 // Product Routes
@@ -34,10 +35,16 @@ Route::post('/ratings', [ProductController::class, 'addRating']);
 // Order Routes
 Route::get('/orders', [OrderController::class, 'getAllOrders']);
 Route::get('/orders/{id}', [OrderController::class, 'getOrderById']);
-Route::get('/orders/{userid}', [OrderController::class, 'getOrderByUserID']);
+// Route::get('/orders/{userid}', [OrderController::class, 'getOrderByUserID']);
 Route::post('/orders', [OrderController::class, 'createOrder']);
 Route::put('/orders/{id}', [OrderController::class, 'updateOrder']);
 Route::delete('/orders/{id}', [OrderController::class, 'deleteOrder']);
+Route::get('/orders/status/pending', [OrderController::class, 'getPendingOrders']);
+Route::get('/orders/status/active', [OrderController::class, 'getActiveOrders']);
+Route::put('/orders/{id}/accept', [OrderController::class, 'acceptOrder']);
+Route::put('/orders/{id}/reject', [OrderController::class, 'rejectOrder']);
+Route::put('/orders/{id}/ship', [OrderController::class, 'shipOrder']);
+Route::put('/orders/{id}/complete', [OrderController::class, 'completeOrder']);
 
 //Employees
 Route::get('/employees', [UserController::class, 'getEmployees']);
