@@ -7,6 +7,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\Rating;
+use Termwind\Components\Raw;
 
 class ProductController extends Controller
 {
@@ -253,4 +255,21 @@ class ProductController extends Controller
 
         return response()->json($products, 200);
     }
+
+    public function addRating(Request $request)
+    {
+        $validated = $request->validate([
+            'userID' => 'required|integer',
+            'productID' => 'required|integer|exists:products,productID', 
+            'orderDetailID' => 'required|integer',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $rating = Rating::create($validated);
+        return response()->json([
+            'message' => 'Rating added successfully',
+            'rating' => $rating
+        ], 201);
+    }
+
 }

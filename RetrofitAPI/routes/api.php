@@ -29,6 +29,10 @@ Route::delete('/products/{id}', [ProductController::class, 'deleteProduct']);
 Route::get('/products/category/name/{categoryName}', [ProductController::class, 'getProductsByCategoryName']);
 Route::get('/products/category/id/{categoryID}', [ProductController::class, 'getProductsByCategoryID']);
 
+//Rating Routes
+Route::post('/ratings', [ProductController::class, 'addRating']);
+
+
 // Order Routes
 Route::get('/orders', [OrderController::class, 'getAllOrders']);
 Route::get('/orders/{id}', [OrderController::class, 'getOrderById']);
@@ -38,10 +42,13 @@ Route::put('/orders/{id}', [OrderController::class, 'updateOrder']);
 Route::delete('/orders/{id}', [OrderController::class, 'deleteOrder']);
 Route::get('/orders/status/pending', [OrderController::class, 'getPendingOrders']);
 Route::get('/orders/status/active', [OrderController::class, 'getActiveOrders']);
+Route::get('/orders/status/cooking', [OrderController::class, 'getCookingOrders']);
+Route::get('/orders/status/shipping', [OrderController::class, 'getShippingOrders']);
+Route::get('/orders/status/completed', [OrderController::class, 'getCompletedOrders']);
 Route::put('/orders/{id}/accept', [OrderController::class, 'acceptOrder']);
 Route::put('/orders/{id}/reject', [OrderController::class, 'rejectOrder']);
 Route::put('/orders/{id}/ship', [OrderController::class, 'shipOrder']);
-Route::put('/orders/{id}/complete', [OrderController::class, 'completeOrder']);
+Route::put('/orders/{id}/finish', [OrderController::class, 'completeOrder']);
 
 //Employees
 Route::get('/employees', [UserController::class, 'getEmployees']);
