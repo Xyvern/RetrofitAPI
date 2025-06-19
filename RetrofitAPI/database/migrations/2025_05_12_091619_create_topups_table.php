@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('method')->default('-');
             $table->decimal('amount', 12, 2);
             $table->timestamp('transdate');
-            $table->integer('status')->default(0);
+            $table->string('status');
             $table->string('snap_token')->nullable();
 
             $table->foreign('userID')->references('userID')->on('users')->onDelete('cascade');
