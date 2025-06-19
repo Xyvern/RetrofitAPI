@@ -15,6 +15,8 @@ Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 Route::get('users/email/{email}', [UserController::class, 'getUserByEmail']);
 Route::post('login', [UserController::class, 'login']);
 Route::get('/postcode', [UserController::class, 'getPostCode']);
+Route::post('/topup/token/{id}', [UserController::class, 'getSnapToken']);
+
 
 // Product Routes
 Route::get('/products', [ProductController::class, 'getAllProducts']);

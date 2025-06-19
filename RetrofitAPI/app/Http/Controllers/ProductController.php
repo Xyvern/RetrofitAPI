@@ -35,11 +35,30 @@ class ProductController extends Controller
 
     public function getProductById($id)
     {
-        $product = Product::find($id);
+        $product = Product::with('category')->find($id);
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-        return response()->json($product, 200);
+        
+        $newProduct = [
+            'productID' => $product->productID,
+            'name' => $product->name,
+            'categoryID' => $product->categoryID,
+            'price' => $product->price,
+            'rating' => $product->rating,
+            'description' => $product->description,
+            'img_url' => $product->img_url,
+            'deleted_at' => $product->deleted_at,
+            'created_at' => $product->created_at,
+            'updated_at' => $product->updated_at,
+            'category' => $product->category,
+            'total_rating' => $product->getTotalRating(),
+            'protein' => $product->protein,
+            'fat' => $product->fat,
+            'calories' => $product->calories,
+        ];
+        
+        return response()->json($newProduct, 200);
     }
 
     public function createProduct(Request $request)
