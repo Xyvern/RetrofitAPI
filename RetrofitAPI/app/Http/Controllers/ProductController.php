@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -32,6 +34,112 @@ class ProductController extends Controller
 
         return response()->json($products, 200);
     }
+
+    public function getTopMenus()
+    {
+        $products = Product::with(['category', 'ratings'])
+            ->orderByDesc('rating')
+            ->limit(4)
+            ->get();
+        
+        $formattedProducts = $products->map(function ($product) {
+            return [
+                'productID' => $product->productID,
+                'name' => $product->name,
+                'categoryID' => $product->categoryID,
+                'price' => $product->price,
+                'rating' => $product->rating,
+                'description' => $product->description,
+                'img_url' => $product->img_url,
+                'fat' => $product->fat,
+                'calories' => $product->calories,
+                'protein' => $product->protein,
+                'deleted_at' => $product->deleted_at,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at,
+                'category' => $product->category,
+                'total_rating' => $product->getTotalRating(),
+            ];
+        });
+
+        return response()->json($formattedProducts, 200);
+    }
+    // public function getTopMenus() {
+    //     try {
+    //         Log::info('Starting getTopMenus query');
+
+    //         $products = Product::with(['category', 'ratings'])
+    //             ->leftJoin('ratings', 'products.productID', '=', 'ratings.productID')
+    //             ->select(
+    //                 'products.productID',
+    //                 'products.name',
+    //                 'products.categoryID',
+    //                 'products.price',
+    //                 'products.description',
+    //                 'products.img_url',
+    //                 'products.fat',
+    //                 'products.calories',
+    //                 'products.protein',
+    //                 'products.deleted_at',
+    //                 'products.created_at',
+    //                 'products.updated_at',
+    //                 DB::raw('COALESCE(AVG(ratings.rating), 0) as ratings_avg_rating')
+    //             )
+    //             ->groupBy(
+    //                 'products.productID',
+    //                 'products.name',
+    //                 'products.categoryID',
+    //                 'products.price',
+    //                 'products.description',
+    //                 'products.img_url',
+    //                 'products.fat',
+    //                 'products.calories',
+    //                 'products.protein',
+    //                 'products.deleted_at',
+    //                 'products.created_at',
+    //                 'products.updated_at'
+    //             )
+    //             ->orderByDesc('ratings_avg_rating')
+    //             ->limit(4)
+    //             ->get();
+
+    //         Log::info('Query executed, found ' . $products->count() . ' products');
+
+    //         $formattedProducts = $products->map(function ($product) {
+    //             try {
+    //                 return [
+    //                     'productID' => $product->productID,
+    //                     'name' => $product->name,
+    //                     'categoryID' => $product->categoryID,
+    //                     'price' => $product->price,
+    //                     'rating' => $product->rating,
+    //                     'description' => $product->description ?? '',
+    //                     'img_url' => $product->img_url ?? '',
+    //                     'fat' => $product->fat ?? 0,
+    //                     'calories' => $product->calories ?? 0,
+    //                     'protein' => $product->protein ?? 0,
+    //                     'deleted_at' => $product->deleted_at,
+    //                     'created_at' => $product->created_at,
+    //                     'updated_at' => $product->updated_at,
+    //                     'category' => $product->category ? [
+    //                         'categoryID' => $product->category->categoryID,
+    //                         'name' => $product->category->name ?? '',
+    //                     ] : null,
+    //                     'total_rating' => $product->getTotalRating(),
+    //                 ];
+    //             } catch (\Exception $e) {
+    //                 Log::error('Error mapping product ID ' . $product->productID . ': ' . $e->getMessage());
+    //                 return ['error' => 'Failed to process product'];
+    //             }
+    //         });
+
+    //         Log::info('Mapping completed, returning response');
+    //         return response()->json($formattedProducts, 200);
+    //     } catch (\Exception $e) {
+    //         Log::error('Error in getTopMenus: ' . $e->getMessage());
+    //         return response()->json(['error' => 'Internal server error'], 500);
+    //     }
+    // }
 
     public function getProductById($id)
     {

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderAddon;
+use App\Models\OrderDetail;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -104,10 +107,39 @@ class OrderController extends Controller
             'userID' => $request->input('userID'),
             'subtotal' => $request->input('subtotal'),
             'shipping_fee' => $request->input('shipping_fee', 0),
+            'prep_time' => $request->input('prep_time'),
             'total' => $request->input('total'),
             'status' => $request->input('status', 'pending'),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
-        return response()->json(['message' => 'Order created successfully', 'orderID' => $order->orderID], 201);
+
+        foreach ($request->order_details as $detail) {
+            $orderdetail = OrderDetail::create([
+                'productID' => $detail['productID'],
+                'quantity' => $detail['quantity'],
+                'price' => $detail['price'],
+                'orderID' => $order->orderID,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+            OrderAddon::create([
+                'orderDetailID' => $orderdetail->orderDetailID,
+                'addon_name' => $detail['addons']['addon_name'],
+            ]);
+
+            $user = User::find($request->input('userID'));
+            if ($user) { 
+                $orderTotal = $request->input('total');
+                $user->credit -= $orderTotal; 
+                $user->save(); 
+            }   
+        
+            
+        }
+        return response()->json(['message' => 'Order created successfully'], 201);
+    
     }
     public function updateOrder(Request $request, $id)
     {
