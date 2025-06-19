@@ -16,6 +16,7 @@ Route::get('users/email/{email}', [UserController::class, 'getUserByEmail']);
 Route::post('login', [UserController::class, 'login']);
 Route::get('/postcode', [UserController::class, 'getPostCode']);
 Route::post('/topup/token/{id}', [UserController::class, 'getSnapToken']);
+Route::get('/postcode-location', [UserController::class, 'getCoordinates']);
 
 
 // Product Routes
