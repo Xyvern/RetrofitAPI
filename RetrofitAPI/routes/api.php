@@ -25,6 +25,10 @@ Route::delete('/products/{id}', [ProductController::class, 'deleteProduct']);
 Route::get('/products/category/name/{categoryName}', [ProductController::class, 'getProductsByCategoryName']);
 Route::get('/products/category/id/{categoryID}', [ProductController::class, 'getProductsByCategoryID']);
 
+//Rating Routes
+Route::post('/ratings', [ProductController::class, 'addRating']);
+
+
 // Order Routes
 Route::get('/orders', [OrderController::class, 'getAllOrders']);
 Route::get('/orders/{id}', [OrderController::class, 'getOrderById']);
