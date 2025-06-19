@@ -119,6 +119,16 @@ class UserController extends Controller
         return response()->json($postcodes, 200);
     }
 
+    public function getCoordinates(Request $request)
+    {
+        $postcode = $request->query('postcode');
+        $location = Postcode::where('postcodeId', $postcode)->first();
+        if (!$location) {
+            return response()->json(['message' => 'Postcode not found'], 404);
+        }
+        return response()->json($location, 200);
+    }
+
     //employee
      public function getEmployees()
     {
