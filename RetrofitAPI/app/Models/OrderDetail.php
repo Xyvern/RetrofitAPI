@@ -10,7 +10,7 @@ class OrderDetail extends Model
     protected $primaryKey = 'orderDetailID';
     public $timestamps = false;
     public $incrementing = true;
-    protected $fillable = ['orderID', 'productID', 'quantity', 'price'];
+    protected $fillable = ['orderID', 'productID', 'quantity', 'price', 'addon'];
 
     public function order()
     {

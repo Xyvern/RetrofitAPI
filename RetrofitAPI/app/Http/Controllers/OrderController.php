@@ -34,6 +34,7 @@ class OrderController extends Controller
                         'product_name' => $detail->product->name ?? 'Unknown',
                         'quantity' => $detail->quantity,
                         'price' => $detail->price,
+                        'addon' => $detail->addon,
                         'total' => $detail->quantity * $detail->price,
                         'addons' => $detail->orderAddons->map(function ($addon) {
                             return [
@@ -81,6 +82,7 @@ class OrderController extends Controller
                     'product_name' => $detail->product->name ?? 'Unknown',
                     'quantity' => $detail->quantity,
                     'price' => $detail->price,
+                    'addon' => $detail->addon,
                     'total' => $detail->quantity * $detail->price,
                     'addons' => $detail->orderAddons->map(function ($addon) {
                         return [
@@ -232,6 +234,7 @@ class OrderController extends Controller
                     'product_name' => $detail->product->name ?? 'Unknown',
                     'quantity' => $detail->quantity,
                     'price' => $detail->price,
+                    'addon' => $detail->addon,
                     'total' => $detail->quantity * $detail->price,
                     'addons' => $detail->orderAddons->map(function ($addon) {
                     return [
@@ -272,6 +275,7 @@ class OrderController extends Controller
                             'product_name' => $detail->product->name ?? 'Unknown',
                             'quantity' => $detail->quantity,
                             'price' => $detail->price,
+                            'addon' => $detail->addon,
                             'total' => $detail->quantity * $detail->price,
                             'addons' => $detail->orderAddons->map(function ($addon) {
                                 return [
@@ -312,6 +316,7 @@ class OrderController extends Controller
                     'product_name' => $detail->product->name ?? 'Unknown',
                     'quantity' => $detail->quantity,
                     'price' => $detail->price,
+                    'addon' => $detail->addon,
                     'total' => $detail->quantity * $detail->price,
                     'addons' => $detail->orderAddons->map(function ($addon) {
                     return [
@@ -352,6 +357,7 @@ class OrderController extends Controller
                     'product_name' => $detail->product->name ?? 'Unknown',
                     'quantity' => $detail->quantity,
                     'price' => $detail->price,
+                    'addon' => $detail->addon,
                     'total' => $detail->quantity * $detail->price,
                     'addons' => $detail->orderAddons->map(function ($addon) {
                     return [
@@ -392,6 +398,7 @@ class OrderController extends Controller
                     'product_name' => $detail->product->name ?? 'Unknown',
                     'quantity' => $detail->quantity,
                     'price' => $detail->price,
+                    'addon' => $detail->addon,
                     'total' => $detail->quantity * $detail->price,
                     'addons' => $detail->orderAddons->map(function ($addon) {
                     return [
